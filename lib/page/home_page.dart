@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gerencia_estado_nativa/01_setSate/imc_set_state.dart';
-import 'package:gerencia_estado_nativa/02_valueNofifier/value_notifier_page.dart';
+import 'package:gerencia_estado_nativa/02_valueNotifier/value_notifier_page.dart';
+import 'package:gerencia_estado_nativa/03_changeNotifier/change_notifier.dart';
+import 'package:gerencia_estado_nativa/04_bloc_pattern/bloc.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -38,7 +40,7 @@ class HomePage extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () {
-                _goToPage(context, ValueNofifierPage());
+                _goToPage(context, ValueNotifierPage());
               },
               child: const Text('ValueNofitier'),
             ),
@@ -46,14 +48,18 @@ class HomePage extends StatelessWidget {
               height: 5,
             ),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                _goToPage(context, ChangeNotifierPage());
+              },
               child: const Text('ChangeNotifier'),
             ),
             const SizedBox(
               height: 5,
             ),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                _goToPage(context, Bloc());
+              },
               child: const Text('Bloc Patterns (stream'),
             ),
           ],

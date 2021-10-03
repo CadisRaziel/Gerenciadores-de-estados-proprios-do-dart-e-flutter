@@ -1,39 +1,23 @@
-import 'dart:math';
-
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/material.dart';
-
 import 'package:gerencia_estado_nativa/shared/widgets/imc_gauge.dart';
 import 'package:intl/intl.dart';
 
-class Template extends StatefulWidget {
-  const Template({Key? key}) : super(key: key);
+class Bloc extends StatefulWidget {
+  const Bloc({Key? key}) : super(key: key);
 
   @override
-  State<Template> createState() => _TemplateState();
+  _BlocState createState() => _BlocState();
 }
 
-class _TemplateState extends State<Template> {
+class _BlocState extends State<Bloc> {
   final pesoEC = TextEditingController();
   final alturaEC = TextEditingController();
 
-  //*Criando globalKey para validar o formulario e implementando o 'Form'
-  final formkey = GlobalKey<FormState>();
   var imcDouble = 0.0;
 
-  Future<void> calcularImc(
-      {required double peso, required double altura}) async {
-    setState(() {
-      //*Para que toda vez que fizer um novo calculo o ponteiro ir para o 0 e depois ir ate o valor do novo calculo
-      //*para isso fomos preciso colocar um async await pois é estava muito rapido !!
-      imcDouble = 0;
-    });
-    await Future.delayed(Duration(seconds: 1));
-
-    setState(() {
-      imcDouble = peso / pow(altura, 2);
-    });
-  }
+  //*Criando globalKey para validar o formulario e implementando o 'Form'
+  final formkey = GlobalKey<FormState>();
 
   //!Nunca se esqueça, sempre encerre os controllers !!!
   @override
@@ -134,7 +118,7 @@ class _TemplateState extends State<Template> {
                       double alturaValid =
                           formatter.parse(alturaEC.text) as double;
 
-                      calcularImc(peso: pesoValid, altura: alturaValid);
+                      // calcularImc(peso: pesoValid, altura: alturaValid);
                     }
                   },
                   child: Text('Calcular'),
