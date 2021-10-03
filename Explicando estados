@@ -1,0 +1,11 @@
+Uma breve explicação de cada estado
+
+ SetState -> rebuilda a tela toda
+
+ValueNotifier -> rebuilda uma parte de código(widget) em especifico (não rebuilda a tela toda)
+
+ChangeNotifier -> Usa o obervable(uma estrutura obervavel'controller') e tem listeners(para ficar ouvindo a lista), ou seja quando
+a classe ou o widget em especifico for alterado os listeners vão ouvir a alteração e o observable(controller) vai alterar 
+
+Bloc Pattern(Stream) -> Divide a regra de negocio em uma classe especifica, como se fosse o controller com changeNotifier
+a diferença é que utiliza streams para fazer a atualização de widgets em especificos
