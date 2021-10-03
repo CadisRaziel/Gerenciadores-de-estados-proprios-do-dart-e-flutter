@@ -1,7 +1,11 @@
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/material.dart';
+import 'package:gerencia_estado_nativa/04_bloc_pattern/bloc_controller.dart';
+import 'package:gerencia_estado_nativa/04_bloc_pattern/bloc_estado.dart';
 import 'package:gerencia_estado_nativa/shared/widgets/imc_gauge.dart';
 import 'package:intl/intl.dart';
+
+//?Obs importante, a stream só escuta 1 listener 'StreamBuilder', e aqui colocamos 2, para ele ouvir mais de 1 ele precisa de um 'braodcast'
 
 class Bloc extends StatefulWidget {
   const Bloc({Key? key}) : super(key: key);
@@ -13,8 +17,7 @@ class Bloc extends StatefulWidget {
 class _BlocState extends State<Bloc> {
   final pesoEC = TextEditingController();
   final alturaEC = TextEditingController();
-
-  var imcDouble = 0.0;
+  final controller = BlocController();
 
   //*Criando globalKey para validar o formulario e implementando o 'Form'
   final formkey = GlobalKey<FormState>();
@@ -24,6 +27,7 @@ class _BlocState extends State<Bloc> {
   void dispose() {
     pesoEC.dispose();
     alturaEC.dispose();
+    controller.dispose();
     super.dispose();
   }
 
@@ -31,10 +35,10 @@ class _BlocState extends State<Bloc> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Imc SetState'),
+        title: const Text('Imc Bloc Pattern'),
         centerTitle: true,
         elevation: 0,
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.lightBlue,
       ),
       body: SingleChildScrollView(
         child: Form(
@@ -43,12 +47,36 @@ class _BlocState extends State<Bloc> {
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: [
-                //*componetizamos o Gauge !! olhe como estruturamos ele !!
-                ImcGauge(
-                  imc: imcDouble,
+                StreamBuilder<BlocEstado>(
+                  //*stream -> quem vai ficar escutando
+                  stream: controller.imcOut,
+                  builder: (context, snapshot) {
+                    var imc = 0.0;
+                    if (snapshot.hasData) {
+                      imc = snapshot.data?.imc ?? 0;
+                    }
+                    return ImcGauge(
+                      imc: imc,
+                    );
+                  },
                 ),
                 const SizedBox(
                   height: 20,
+                ),
+                StreamBuilder<BlocEstado>(
+                  stream: controller.imcOut,
+                  builder: (context, snapshot) {
+                    //*Visibility -> é como se fosse um 'if' para mostrar ou não algo
+                    return Visibility(
+                      //*visible -> se tem que mostrar ou não esse CircularProgress
+                      visible: snapshot.data is BlocEstadoLoading,
+                      //*replacement -> quando o visible for falso ele mostra o replacement
+                      // replacement: SizedBox.shrink(),
+                      child: const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  },
                 ),
                 TextFormField(
                   controller: pesoEC,
@@ -118,7 +146,8 @@ class _BlocState extends State<Bloc> {
                       double alturaValid =
                           formatter.parse(alturaEC.text) as double;
 
-                      // calcularImc(peso: pesoValid, altura: alturaValid);
+                      controller.calcularImc(
+                          peso: pesoValid, altura: alturaValid);
                     }
                   },
                   child: Text('Calcular'),
@@ -127,8 +156,8 @@ class _BlocState extends State<Bloc> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(50),
                       ),
-                      onPrimary: Colors.white,
-                      primary: Colors.black),
+                      onPrimary: Colors.black,
+                      primary: Colors.lightBlue),
                 ),
               ],
             ),
