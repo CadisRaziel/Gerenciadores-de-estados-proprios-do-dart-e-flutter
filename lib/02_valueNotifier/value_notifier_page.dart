@@ -1,38 +1,35 @@
 import 'dart:math';
-
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/material.dart';
-
 import 'package:gerencia_estado_nativa/shared/widgets/imc_gauge.dart';
 import 'package:intl/intl.dart';
 
-class Template extends StatefulWidget {
-  const Template({Key? key}) : super(key: key);
+//TODO ValueNotifier -> funciona por reatividade, toda vez que um valor for alterado, ela manda rebuildar um widget especifico
+//* adicionando o ValueListenableBuilder em um widget que queremos que fique atualizando
+//* nos evitamos que a pagina toda se rebuild e com isso apenas o item dentro do ValueListenableBuilder ira rebuildar
+
+class ValueNotifierPage extends StatefulWidget {
+  const ValueNotifierPage({Key? key}) : super(key: key);
 
   @override
-  State<Template> createState() => _TemplateState();
+  State<ValueNotifierPage> createState() => _ValueNotifierPageState();
 }
 
-class _TemplateState extends State<Template> {
+class _ValueNotifierPageState extends State<ValueNotifierPage> {
   final pesoEC = TextEditingController();
   final alturaEC = TextEditingController();
 
   //*Criando globalKey para validar o formulario e implementando o 'Form'
   final formkey = GlobalKey<FormState>();
-  var imcDouble = 0.0;
+  var imcDouble = ValueNotifier(0.0);
 
   Future<void> calcularImc(
       {required double peso, required double altura}) async {
-    setState(() {
-      //*Para que toda vez que fizer um novo calculo o ponteiro ir para o 0 e depois ir ate o valor do novo calculo
-      //*para isso fomos preciso colocar um async await pois é estava muito rapido !!
-      imcDouble = 0;
-    });
+    //! Repare que no value notifier eu nao utilizo mais setState
+    imcDouble.value = 0;
     await Future.delayed(Duration(seconds: 1));
 
-    setState(() {
-      imcDouble = peso / pow(altura, 2);
-    });
+    imcDouble.value = peso / pow(altura, 2);
   }
 
   //!Nunca se esqueça, sempre encerre os controllers !!!
@@ -47,10 +44,10 @@ class _TemplateState extends State<Template> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Imc SetState'),
+        title: const Text('Imc ValueNotifier'),
         centerTitle: true,
         elevation: 0,
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.purple,
       ),
       body: SingleChildScrollView(
         child: Form(
@@ -59,10 +56,15 @@ class _TemplateState extends State<Template> {
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: [
-                //*componetizamos o Gauge !! olhe como estruturamos ele !!
-                ImcGauge(
-                  imc: imcDouble,
-                ),
+                //*valueListenable -> é o que ele vai ficar escutando para fazer a alteração
+                //*Tipei <double> pois o valor que ele fica escutando é um double !!
+                ValueListenableBuilder<double>(
+                    valueListenable: imcDouble,
+                    builder: (context, imcValue, child) {
+                      return ImcGauge(
+                        imc: imcValue,
+                      );
+                    }),
                 const SizedBox(
                   height: 20,
                 ),
@@ -144,7 +146,7 @@ class _TemplateState extends State<Template> {
                         borderRadius: BorderRadius.circular(50),
                       ),
                       onPrimary: Colors.white,
-                      primary: Colors.black),
+                      primary: Colors.purple),
                 ),
               ],
             ),

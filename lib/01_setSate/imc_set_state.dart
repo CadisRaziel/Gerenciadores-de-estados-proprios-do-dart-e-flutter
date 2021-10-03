@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 //TODO problemas do setState
 //*1 -> ele esta rebuildando a tela toda (ou seja toda calculo ele rebuilda a tela interia)
 //*2 -> se eu nao fizesse a atualização do widget 'ImcGauge' aqui diretamente e sim em outro arquivo, com o setState isso nao e possivel
+//! setState -> ele resolve o problema de todas telas simples, porém caso colocarmos muitos widgets de fora, ai ja nao é mais viavel
 
 class ImcSetStatePage extends StatefulWidget {
   const ImcSetStatePage({Key? key}) : super(key: key);

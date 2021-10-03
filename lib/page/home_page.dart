@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gerencia_estado_nativa/setSate/imc_set_state.dart';
+import 'package:gerencia_estado_nativa/01_setSate/imc_set_state.dart';
+import 'package:gerencia_estado_nativa/02_valueNofifier/value_notifier_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -36,7 +37,9 @@ class HomePage extends StatelessWidget {
               height: 5,
             ),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                _goToPage(context, ValueNofifierPage());
+              },
               child: const Text('ValueNofitier'),
             ),
             const SizedBox(
